@@ -1,29 +1,59 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class CurrencySet {
+public class CurrencySet implements Iterable<Currency>{
     
-    private final ArrayList<Currency> CurrencySet;
+    private final ArrayList<Currency> currencySet;
 
     public CurrencySet(ArrayList<Currency> CurrencySet) {
-        this.CurrencySet = CurrencySet;
+        this.currencySet = CurrencySet;
+    }
+
+    public CurrencySet() {
+        currencySet = new ArrayList<>();
+        this.add(new Currency( "EUR", "Euros", '€'));
+        this.add(new Currency( "USD", "Dolares", '$'));
+        this.add(new Currency( "NOK", "Coronas Noruegas", 'N'));
+        this.add(new Currency( "GBP", "Libra Esterlina", '£'));
     }
 
     public Currency get(int index) {
-        return CurrencySet.get(index);
+        return currencySet.get(index);
     }
 
     public boolean add(Currency e) {
-        return CurrencySet.add(e);
+        return currencySet.add(e);
     }
 
     public boolean remove(Object o) {
-        return CurrencySet.remove(o);
+        return currencySet.remove(o);
     }
 
     public ArrayList<Currency> getCurrencySet() {
-        return CurrencySet;
+        return currencySet;
+    }
+    
+    public int size(){
+        return this.currencySet.size();
+    }
+
+    @Override
+    public Iterator<Currency> iterator() {
+        return new Iterator<Currency>() {
+            private int cursor;
+
+            @Override
+            public boolean hasNext() {
+                return cursor < CurrencySet.this.currencySet.size();
+            }
+
+            @Override
+            public Currency next() {
+                return CurrencySet.this.get(cursor++);
+            }
+        };
     }
     
 }

@@ -1,4 +1,4 @@
-package userInterfaces;
+package view.UI;
 
 import model.Currency;
 

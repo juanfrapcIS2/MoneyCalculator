@@ -1,10 +1,13 @@
 package control;
 
-import persistence.ExchangeRateReader;
-import process.MoneyExchanger;
-import userInterfaces.CurrencyDialog;
-import userInterfaces.MoneyDialog;
-import userInterfaces.MoneyDisplay;
+import model.Currency;
+import model.ExchangeRate;
+import model.Money;
+import view.persistence.ExchangeRateReader;
+import view.process.MoneyExchanger;
+import view.UI.CurrencyDialog;
+import view.UI.MoneyDialog;
+import view.UI.MoneyDisplay;
 
 public class ExchangeCommand implements Command{
 
@@ -23,7 +26,10 @@ public class ExchangeCommand implements Command{
     
     @Override
     public void execute() {
-        moneyDisplay.show(MoneyExchanger.exchange(moneyDialog.get(), exchangeRateReader.get(currencyDialog.get(), currencyDialog.get())));
+        Money money = moneyDialog.get();
+        Currency currency = currencyDialog.get();
+        ExchangeRate rate = exchangeRateReader.get(money.getCurrency(), currency);
+        moneyDisplay.show(MoneyExchanger.exchange(money, rate));
     }
     
 }

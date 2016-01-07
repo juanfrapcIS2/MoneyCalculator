@@ -1,4 +1,4 @@
-package persistence;
+package view.persistence;
 
 import model.Currency;
 import model.ExchangeRate;
