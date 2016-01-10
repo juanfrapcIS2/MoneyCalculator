@@ -6,14 +6,13 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import model.Currency;
-import view.UI.CurrencyDialog;
 
-public class CurrencyAdd extends JFrame {
+public class CurrencyAdd extends JDialog {
 
     private Currency currency;
     
@@ -24,7 +23,8 @@ public class CurrencyAdd extends JFrame {
     
     private void deployUI(JFrame frame) {
         this.setTitle("Añade Divisa");
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setModal(true);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setLayout(new FlowLayout());
         this.setMinimumSize(new Dimension(400,100));
         this.setLocationRelativeTo(frame);
@@ -47,7 +47,7 @@ public class CurrencyAdd extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                currency = new Currency(nombre.getText(), codigo.getText(), simbolo.getText().charAt(0));
+                currency = new Currency(codigo.getText(), nombre.getText(), simbolo.getText().charAt(0));
                 CurrencyAdd.this.setVisible(false);
             }
         });
@@ -57,7 +57,4 @@ public class CurrencyAdd extends JFrame {
     public Currency get() {
         return currency;
     }
-
-
-    
 }

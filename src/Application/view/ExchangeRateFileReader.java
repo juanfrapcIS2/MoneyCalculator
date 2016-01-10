@@ -14,13 +14,10 @@ import view.persistence.ExchangeRateReader;
 
 public class ExchangeRateFileReader implements ExchangeRateReader{
 
-    private final CurrencySet currencySet;
     private final File file;
     
     public ExchangeRateFileReader(File file, CurrencySet currencySet) {
-        this.currencySet = currencySet;
         this.file = file;
-        
     }
 
     @Override

@@ -13,10 +13,6 @@ public class CurrencySet implements Iterable<Currency>{
 
     public CurrencySet() {
         currencySet = new ArrayList<>();
-        this.add(new Currency( "EUR", "Euros", '€'));
-        this.add(new Currency( "USD", "Dolares", '$'));
-        this.add(new Currency( "NOK", "Coronas Noruegas", 'N'));
-        this.add(new Currency( "GBP", "Libra Esterlina", '£'));
     }
 
     public Currency get(int index) {

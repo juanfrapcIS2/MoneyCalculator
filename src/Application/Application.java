@@ -1,86 +1,102 @@
 package Application;
 
-import control.Command;
-import control.ExchangeCommand;
+import Application.view.SQLliteCurrencySetLoader;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import model.CurrencySet;
-import view.UI.ConsoleMoneyDiplay;
-import view.UI.CurrencyDialog;
-import view.UI.MockCurrencyDialog;
-import view.UI.MockMoneyDialog;
-import view.UI.MoneyDialog;
-import view.UI.MoneyDisplay;
-import view.persistence.ExchangeRateReader;
-import view.persistence.MockExchangeRateReader;
 
 public class Application extends JFrame {
 
-    private CurrencySet currencySet = new CurrencySet();
-    private String path ="C:\\Users\\Granfran\\Documents\\NetBeansProjects\\MoneyCalculator\\rates.txt";
+    private CurrencySet currencySet;
+    private String path = "jdbc:sqlite:rates.db";
     
-    public static void main(String[] args) throws FileNotFoundException {
-        
+    private JPanel pane;
+    
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         new Application().setVisible(true);
-//        CurrencyDialog CurrencyDialog = new MockCurrencyDialog();
-//        MoneyDialog MoneyDialog = new MockMoneyDialog();
-//        MoneyDisplay MoneyDiplay = new ConsoleMoneyDiplay();
-//        ExchangeRateReader ExchangeRateReader = new MockExchangeRateReader();
-//        Command command = new ExchangeCommand(MoneyDialog, CurrencyDialog, MoneyDiplay, ExchangeRateReader);
-//    
-//        command.execute();
     }
     
-    public Application() throws FileNotFoundException{
+    public Application() throws FileNotFoundException, IOException{
         
         this.setTitle("Money Calculator");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.setMinimumSize(new Dimension(400,200));
         this.setLocationRelativeTo(null);
-//        this.setJMenuBar(añadeMenu());
-        this.getContentPane().add(processPanel());
+        this.setJMenuBar(añadeMenu());
+        this.currencySet = new CurrencySet(new SQLliteCurrencySetLoader(path).load());
+        this.pane = processPanel();
+        this.getContentPane().add(pane);
     }
 
-//    private JMenuBar añadeMenu() {
-//        JMenuBar menuBar = new JMenuBar();
-//        
-//        JMenu menuCurrency = new JMenu("Añadir divisas");
-//        JMenuItem itemNueva = new JMenuItem("Nueva...");
-//        itemNueva.addActionListener(nuevaListener());
-//        JMenuItem itemFichero = new JMenuItem("Desde Fichero...");
-//        JMenuItem itemDB = new JMenuItem("Desde Base de Datos...");
-//        menuCurrency.add(itemNueva);
-//        menuCurrency.add(itemFichero);
-//        menuCurrency.add(itemDB);
-//        
-//        menuBar.add(menuCurrency);
-//        return menuBar;
-//    }
-//
-//    private ActionListener nuevaListener() {
-//        return new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                CurrencyAdd dialog = new CurrencyAdd(Application.this);
-//                dialog.setVisible(true);
-//                currencySet.add(dialog.get());
-//            }
-//        };
-//    }
-
-    private JPanel processPanel() throws FileNotFoundException {
+    private JPanel processPanel() throws IOException {
         return new ProcessPane(currencySet, path);
+    }
+    
+    private JMenuBar añadeMenu() {
+        JMenuBar menuBar = new JMenuBar();
+        
+        JMenuItem itemNueva = new JMenuItem("Nueva divisa...");
+        itemNueva.addActionListener(nuevaListener());
+        menuBar.add(itemNueva);
+        
+        JMenuItem itemAbrir = new JMenuItem("Abrir origen de ratios...");
+        itemAbrir.addActionListener(abrirListener());
+        menuBar.add(itemAbrir);
+        
+        
+        return menuBar;
+    }
+    
+    private ActionListener nuevaListener() {
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CurrencyAdd dialog = new CurrencyAdd(Application.this);
+                dialog.setVisible(true);
+                currencySet.add(dialog.get());
+                Application.this.getContentPane().remove(pane);
+                try {
+                    Application.this.pane = Application.this.processPanel();
+                } catch (IOException ex) {
+                    System.out.println("Carpeta no encontrada");
+                }
+                Application.this.getContentPane().add(pane);
+                Application.this.pane.updateUI();
+            }
+        };
+    }
+
+    private ActionListener abrirListener() {
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileChooser fileChooser = new FileChooser();
+                Application.this.path = fileChooser.open(Application.this);
+                Application.this.getContentPane().remove(pane);
+                if (Application.this.path.endsWith(".db")) {
+                    Application.this.currencySet = new CurrencySet(new SQLliteCurrencySetLoader(path).load());
+                }
+                try {
+                    Application.this.pane = Application.this.processPanel();
+                } catch (IOException ex) {
+                    System.out.println("Carpeta no encontrada");
+                }
+                Application.this.getContentPane().add(pane);
+                Application.this.pane.updateUI();
+            }
+        };
     }
     
     

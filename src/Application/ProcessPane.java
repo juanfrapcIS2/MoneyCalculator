@@ -1,6 +1,7 @@
 package Application;
 
 import Application.view.ExchangeRateFileReader;
+import Application.view.ExchangeRateSQLliteReader;
 import Application.view.SwingCurrencyDialog;
 import Application.view.SwingMoneyDialog;
 import Application.view.SwingMoneyDisplay;
@@ -23,18 +24,18 @@ import view.persistence.ExchangeRateReader;
 
 public class ProcessPane extends JPanel{
 
-    private CurrencySet currencySet;
+    private final CurrencySet currencySet;
     private MoneyDialog moneyDialog;
-    private CurrencyDialog currencyDialog;
+    private final CurrencyDialog currencyDialog;
     private MoneyDisplay moneyDisplay;
-    private final ExchangeRateReader exchangeRateReader;
+    private ExchangeRateReader exchangeRateReader;
     
-    private JComboBox comboBoxFrom;
-    private JComboBox comboBoxTo;
+    private final JComboBox comboBoxFrom;
+    private final JComboBox comboBoxTo;
         
     public ProcessPane(CurrencySet currencySet, String path) throws FileNotFoundException, IOException {
         this.currencySet = currencySet;
-        this.exchangeRateReader = new ExchangeRateFileReader(new File(path), currencySet);
+        this.selectReader(path);
         this.comboBoxFrom = new JComboBox(options(currencySet));
         this.comboBoxTo = new JComboBox(options(currencySet));
         this.currencyDialog = new SwingCurrencyDialog(comboBoxTo, currencySet);
@@ -106,6 +107,14 @@ public class ProcessPane extends JPanel{
                 new ExchangeCommand(moneyDialog, currencyDialog, moneyDisplay, exchangeRateReader).execute();
             }
         };
+    }
+
+    private void selectReader(String path) {
+        if (path.endsWith(".db")) {
+            this.exchangeRateReader = new ExchangeRateSQLliteReader(path);
+        }else{
+            this.exchangeRateReader = new ExchangeRateFileReader(new File(path), currencySet);
+        }
     }
 
 
