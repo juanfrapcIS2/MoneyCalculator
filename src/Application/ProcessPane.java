@@ -55,9 +55,9 @@ public class ProcessPane extends JPanel{
 
     private JPanel addOutputPane() {
         JPanel pane = new JPanel();
-        JTextField fieldIn = new JTextField(10);
+        SwingMoneyDialog fieldIn = new SwingMoneyDialog(10, comboBoxFrom, currencySet);
         pane.add(fieldIn);
-        this.moneyDialog = new SwingMoneyDialog(fieldIn, comboBoxFrom, currencySet);
+        this.moneyDialog = fieldIn;
         
         JLabel label = new JLabel(currencySet.get(0).getSymbol() +"");
         pane.add(label);
@@ -73,9 +73,9 @@ public class ProcessPane extends JPanel{
         button.addActionListener(executeAction());
         pane.add(button);
         
-        JTextField fieldOut = new JTextField(10);
+        SwingMoneyDisplay fieldOut = new SwingMoneyDisplay(10);
         fieldOut.setEditable(false);
-        this.moneyDisplay = new SwingMoneyDisplay(fieldOut);
+        this.moneyDisplay = fieldOut;
         pane.add(fieldOut);
         
         JLabel label1 = new JLabel(currencySet.get(0).getSymbol() +"");

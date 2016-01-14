@@ -4,17 +4,15 @@ import javax.swing.JTextField;
 import model.Money;
 import view.UI.MoneyDisplay;
 
-public class SwingMoneyDisplay implements MoneyDisplay{
+public class SwingMoneyDisplay extends JTextField implements MoneyDisplay{
 
-    private final JTextField field;
-
-    public SwingMoneyDisplay(JTextField field) {
-        this.field = field;
+    public SwingMoneyDisplay(int i) {
+        super(i);
     }
             
     @Override
     public void show(Money money) {
-        field.setText(money.getAmount() + "");
+        this.setText(money.getAmount() + "");
     }
     
 }
